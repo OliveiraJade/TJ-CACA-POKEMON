@@ -13,18 +13,41 @@ public class Criador : MonoBehaviour
 
     private float tempoRestante = 60f;
 
+    private int limite = 10;
+
+    public Carreira[] carreiras;
+
+    private int quantidade = 5;
+
+    public Text pontosVisor;
+
+    private int pontosJogador = 0;
+
+    public void  AumentarPontos()
+    {
+        pontosJogador++;
+        pontosVisor.text = "PONTOS: " + pontosJogador;
+    }
+
 
     public void ChocaCarreira()
     {
-        int quantidade = 3;
-        for(int i = 0; i < quantidade; i++)
+        carreiras = FindObjectsOfType<Carreira>();
+        if (carreiras.Length < limite)
         {
+            for (int i = 0; i < quantidade; i++)
+            {
 
-            Vector3 carreiraPosicao = new Vector3(Random.Range(-7f , 7f) , Random.Range(-4f, 4f) , 0f);
-        Instantiate(carreira, carreiraPosicao, Quaternion.identity); 
+                Vector3 carreiraPosicao = new Vector3(Random.Range(-7f, 7f), Random.Range(-4f, 4f), 0f);
+                Instantiate(carreira, carreiraPosicao, Quaternion.identity);
+            }
+        }
     }
 
-}
+    void Start()
+    {
+        InvokeRepeating("ChocaCarreira", 0.0f, 2.0f);
+    }
 
     // Update is called once per frame
     void Update()
@@ -34,6 +57,7 @@ public class Criador : MonoBehaviour
 
         if(tempoRestante < -5)
         {
+            PlayerPrefs.SetInt("PontosAtual", pontosJogador);
             SceneManager.LoadScene("CenaFim");
 
         }else if(tempoRestante < 0)
@@ -41,9 +65,13 @@ public class Criador : MonoBehaviour
             contador.text = "TEMPO\nESGOTADO";
         }else if(tempoRestante < 10)
         {
+            limite = 50;
+            quantidade = 15;
             contador.color = Color.red;
         }else if(tempoRestante < 30)
         {
+            limite = 20;
+            quantidade = 10;
             contador.color = Color.yellow;
         }
     }
